@@ -9,11 +9,11 @@ import (
 
 var URL = "https://jsonplaceholder.typicode.com/albums"
 
-func GetAlbums(album apis.HttpInterface) http.HandlerFunc  {
+func GetAlbums(artist apis.HttpInterface) http.HandlerFunc  {
 	return func (w http.ResponseWriter, r *http.Request) {
 		var albums []models.Album
 
-		body, err := album.Get(URL)
+		body, err := artist.Get(URL)
 		returnError(w, err)
 
 		err = json.Unmarshal(body, &albums)

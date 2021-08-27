@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"github.com/stretchr/testify/mock"
 	"io/ioutil"
 	"net/http"
 )
@@ -25,4 +26,12 @@ func (a *HttpArtist) Get(url string) ([]byte, error) {
 	return httpGet(url)
 }
 
-//mock Test
+// MockHttpArtist Mock Test
+type MockHttpArtist struct {
+	mock.Mock
+}
+
+func (m *MockHttpArtist) Get(url string) ([]byte, error) {
+	called := m.Called(url)
+	return called.Get(0).([]byte), called.Error(1)
+}

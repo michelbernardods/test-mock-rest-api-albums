@@ -1,16 +1,23 @@
 package handler
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"go-albums/apis"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 )
 
-func TestSomething(t *testing.T) {
+func TestGetAlbums(t *testing.T) {
+	artist := &apis.MockHttpArtist{}
+	artist.On("Get", URL).Return([]byte(`[{"title":"quidem molestiae enim"}]`), nil)
+	artist.On("Get", URL).Return([]byte(`[{"id":0}]`), nil)
 
-	// assert equality
-	assert.Equal(t, 123, 123, "they should be equal")
-
-	// assert inequality
-	assert.NotEqual(t, 123, 456, "they should not be equal")
-
+	req, _ := http.NewRequest("GET", "/albums", nil)
+	rec := httptest.NewRecorder()
+	get := GetAlbums(artist)
+	get.ServeHTTP(rec, req)
+	assert.Contains(t, rec.Body.String(), `"title":"quidem molestiae enim"`)
+	assert.Contains(t, rec.Body.String(), `"id":0`)
+	artist.AssertExpectations(t)
 }
